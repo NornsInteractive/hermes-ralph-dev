@@ -1,3 +1,5 @@
+[English](../basic-web-app-en/README.md) | [简体中文](./README.md)
+
 # basic-web-app 示例
 
 这是一个演示用项目骨架，展示 Hermes 在接收到需求后，为 Ralph / Claude Code 准备出来的典型文件结构。

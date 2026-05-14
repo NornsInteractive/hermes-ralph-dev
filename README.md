@@ -1,73 +1,79 @@
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
 # hermes-ralph-dev
 
-一个给 Hermes 使用的开发编排 skill：Hermes 负责收集需求、准备 Ralph / Claude Code 所需文件、启动 `ralph` 并回报状态，真正的代码编写全部交给 `ralph-claude-code`。
+A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes collects requirements, prepares the project files Ralph needs, starts `ralph`, tracks progress, and reports results. Hermes does not write business code itself.
 
-English summary: this repository contains a Hermes skill plus templates and examples for delegating software tasks to Ralph + Claude Code without letting Hermes write business code itself.
+## Goals
 
-## 仓库目标
+- Standardize the workflow from requirement intake to Ralph configuration to Claude Code execution to status reporting
+- Keep the responsibility boundary between Hermes and Ralph explicit
+- Provide reusable templates and complete examples for open-source distribution or internal team reuse
 
-- 把“提需求 -> 生成 Ralph 配置 -> 启动 Claude Code 开发 -> 回报进度”这条链路标准化
-- 明确 Hermes 与 Ralph 的职责边界，避免 Hermes 越权直接改业务代码
-- 提供可复用模板与完整示例，方便你直接开源、二次修改或给团队内部复用
+## What Hermes does
 
-## Hermes 在这个 skill 中做什么
+- Collect feature requests or bug reports
+- Check whether `ralph` is installed and whether the target project is initialized
+- Create or update `CLAUDE.md`
+- Create or update `.ralph/fix_plan.md`
+- Append completion-signal rules to `.ralph/PROMPT.md` in an idempotent way
+- Start `ralph --monitor`
+- Watch for completion, timeout, or crashes and notify the user
 
-- 收集需求或 bug 信息
-- 检查 `ralph` 是否可用、项目是否已初始化
-- 写入或更新 `CLAUDE.md`
-- 写入或更新 `.ralph/fix_plan.md`
-- 幂等补充 `.ralph/PROMPT.md` 的完成信号规范
-- 启动 `ralph --monitor`
-- 监控完成、超时、异常退出并通知用户
+## What Hermes does not do
 
-## Hermes 不做什么
+- Write business code
+- Modify application source files directly
+- Diagnose the root cause of bugs or design the implementation plan on Ralph's behalf
 
-- 不写任何业务代码
-- 不直接修改源码文件
-- 不替 Ralph 分析 bug 根因或设计修复方案
-
-## 仓库内容
+## Repository layout
 
 ```text
 .
-├── ralph-dev.md                 # Hermes skill 主文件
-├── templates/                   # Hermes 生成文件时可参考的模板
-│   ├── CLAUDE.md
-│   ├── fix_plan.md
-│   ├── PROMPT.md
-│   └── docs/...
+├── ralph-dev.md                  # Chinese Hermes skill
+├── ralph-dev.en.md               # English Hermes skill
+├── templates/                    # Reusable project templates
 ├── examples/
-│   └── basic-web-app/           # 一个完整示例项目骨架
-├── README.md
+│   ├── basic-web-app/            # Chinese example project
+│   └── basic-web-app-en/         # English example project
+├── README.md                     # English README
+├── README.zh-CN.md               # Chinese README
 └── LICENSE
 ```
 
-## 快速使用
+## Quick start
 
-1. 安装 `ralph-claude-code` 以及它依赖的工具。
-2. 把 [ralph-dev.md](./ralph-dev.md) 导入 Hermes skill 系统。
-3. 给 Hermes 发需求，例如：
+1. Install `ralph-claude-code` and its dependencies.
+2. Import [ralph-dev.en.md](./ralph-dev.en.md) into your Hermes skill system.
+3. Send Hermes a request like this:
 
 ```text
-在 /Users/me/projects/todo-api 里新增一个任务管理模块：
+Add a task management module to /Users/me/projects/todo-api:
 - Node.js + Express + PostgreSQL
-- 需要任务增删改查
-- 要有 JWT 登录
+- Need task CRUD
+- Need JWT login
 ```
 
-4. Hermes 会检查环境、准备文档和 `.ralph/` 文件，然后启动 `ralph`。
-5. Ralph 调起 Claude Code 完成开发；Hermes 负责汇报状态与结果。
+4. Hermes checks the environment, prepares the docs and `.ralph/` files, then starts `ralph`.
+5. Ralph invokes Claude Code to implement the work while Hermes reports progress and outcomes.
 
-## 推荐配套方式
+## Recommended setup
 
-- `CLAUDE.md` 只保留项目简介、技术栈、规则和 docs 索引
-- 详细模块说明、表结构、接口约定全部写到 `docs/`
-- `fix_plan.md` 只写具体可执行任务，不写模糊目标
-- `PROMPT.md` 里加入完成信号，保证 Hermes 能识别 Ralph 已结束
+- Keep `CLAUDE.md` short and use it only for project summary, stack, conventions, and doc pointers
+- Put module details, schema notes, and API contracts under `docs/`
+- Keep `fix_plan.md` concrete and executable, not vague
+- Add explicit completion rules to `PROMPT.md` so Hermes can reliably detect when Ralph is done
 
-## 示例说明
+## Language variants
 
-[`examples/basic-web-app`](./examples/basic-web-app) 展示了一个“任务管理 Web API”项目在被 Hermes 初始化后的样子，包括：
+- Chinese skill: [ralph-dev.md](./ralph-dev.md)
+- English skill: [ralph-dev.en.md](./ralph-dev.en.md)
+- Chinese example: [examples/basic-web-app](./examples/basic-web-app)
+- English example: [examples/basic-web-app-en](./examples/basic-web-app-en)
+
+## Example projects
+
+The example projects show what a Hermes-initialized Ralph workspace looks like, including:
 
 - `CLAUDE.md`
 - `.ralph/fix_plan.md`
@@ -78,20 +84,21 @@ English summary: this repository contains a Hermes skill plus templates and exam
 - `docs/api/*.md`
 - `docs/skills/*.md`
 
-如果你要给别人展示这个 skill 的工作流，这个示例可以直接截图或作为 demo 仓库结构引用。
+They are intended as reference output, not as directly runnable applications.
 
-## 适合开源发布的点
+## Why this repository is open-source friendly
 
-- Skill 行为边界清晰
-- 示例项目完整，便于理解输出产物
-- 模板与示例分离，既能复制也能演示
-- MIT 许可证，便于他人复用
+- Clear behavioral boundary for the skill
+- Complete examples that make the output structure easy to understand
+- Templates and examples are separated, so users can both copy and inspect them
+- MIT license for easy reuse
 
-## 后续可选增强
+## Possible next enhancements
 
-- 增加多语言模板（Node / Python / Go）
-- 增加 `.github` issue template，方便收集 bug / feature request
-- 增加一个脚本把 `templates/` 快速复制到目标项目
+- Add bilingual templates
+- Add multi-stack examples for Node, Python, and Go
+- Add `.github` issue and PR templates
+- Add a bootstrap script that copies `templates/` into a target project
 
 ## License
 
