@@ -1,5 +1,5 @@
 ---
-name: ralph-dev-en
+name: ralph-dev
 description: Automate software delivery with ralph-claude-code. Give me a feature request or bug report, I will prepare the required files, start Ralph, and notify you when it finishes. I do not write business code myself.
 version: 3.2.0
 platforms: [macos, linux]
