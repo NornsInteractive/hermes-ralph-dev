@@ -30,8 +30,8 @@
 
 ```text
 .
-├── ralph-dev.md                  # 中文版 Hermes skill
-├── ralph-dev.en.md               # 英文版 Hermes skill
+├── SKILL.zh-CN.md                # 中文版 Hermes skill
+├── SKILL.md                      # 英文版 Hermes skill
 ├── templates/                    # 可复用项目模板
 ├── examples/
 │   ├── basic-web-app/            # 中文示例项目
@@ -44,7 +44,7 @@
 ## 快速使用
 
 1. 安装 `ralph-claude-code` 以及它依赖的工具。
-2. 把 [ralph-dev.md](./ralph-dev.md) 导入 Hermes skill 系统。
+2. 把 [SKILL.zh-CN.md](./SKILL.zh-CN.md) 导入 Hermes skill 系统。
 3. 给 Hermes 发需求，例如：
 
 ```text
@@ -63,11 +63,13 @@
 - 详细模块说明、表结构、接口约定全部写到 `docs/`
 - `fix_plan.md` 只写具体可执行任务，不写模糊目标
 - `PROMPT.md` 里加入完成信号，保证 Hermes 能识别 Ralph 已结束
+- 启动 Ralph 前，确保目标项目的 `.ralphrc` 中已配置 `ALLOWED_TOOLS="*"` 和 `CLAUDE_ALLOWED_TOOLS="*"`，否则 Claude Code 很容易因为权限限制中途中断
+- Skill 在每次启动前都应检查 `.ralphrc`；如果缺少任一项，Hermes 需要先提示用户是否改成 `*`
 
 ## 多语言文件
 
-- 中文 skill：[ralph-dev.md](./ralph-dev.md)
-- 英文 skill：[ralph-dev.en.md](./ralph-dev.en.md)
+- 中文 skill：[SKILL.zh-CN.md](./SKILL.zh-CN.md)
+- 英文 skill：[SKILL.md](./SKILL.md)
 - 中文示例：[examples/basic-web-app](./examples/basic-web-app)
 - 英文示例：[examples/basic-web-app-en](./examples/basic-web-app-en)
 

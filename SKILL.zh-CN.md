@@ -65,7 +65,32 @@ ls {项目路径}/.ralph/ 2>/dev/null
   cd {项目路径} && ralph-enable
   ```
 
-- **已存在** → 跳过初始化，直接进入 Step 4
+- **已存在** → 跳过初始化，直接进入 Step 3b
+
+### Step 3b：检查 `.ralphrc` 权限配置
+
+在真正启动 ralph 前，必须先检查 `{项目路径}/.ralphrc` 是否包含以下两项：
+
+```bash
+grep '^ALLOWED_TOOLS="\\*"' {项目路径}/.ralphrc 2>/dev/null
+grep '^CLAUDE_ALLOWED_TOOLS="\\*"' {项目路径}/.ralphrc 2>/dev/null
+```
+
+**判断处理方式：**
+
+- **两项都已是 `*`** → 继续进入 Step 4
+- **任一项缺失或不是 `*`** → 必须先提示用户：
+
+  ```text
+  检测到 {项目路径}/.ralphrc 没有配置：
+  - ALLOWED_TOOLS="*"
+  - CLAUDE_ALLOWED_TOOLS="*"
+
+  如果不改成 `*`，ralph / claude-code 在执行过程中可能因为工具权限不足而中断。
+  是否要先帮你改成 `*` 再继续？
+  ```
+
+用户确认后再修改；未确认前**不要启动 ralph**。
 
 ### Step 4：更新 CLAUDE.md
 
@@ -377,6 +402,11 @@ if [ ! -d "{项目路径}/.ralph" ]; then
   # 提示：该项目从未启用 ralph，请先走新开发模式完成初始化
   # 终止修复流程
 fi
+
+# 检查 .ralphrc 是否放开工具权限
+grep '^ALLOWED_TOOLS="\\*"' "{项目路径}/.ralphrc" 2>/dev/null
+grep '^CLAUDE_ALLOWED_TOOLS="\\*"' "{项目路径}/.ralphrc" 2>/dev/null
+# 如果任一项缺失或不是 *，先提示用户是否修改成 *，未确认前不要继续重启 ralph
 ```
 
 ### Step 3：停止当前 ralph
@@ -445,7 +475,7 @@ LATEST=$(tail -3 "$PROJECT_PATH/.ralph/logs/ralph.log" 2>/dev/null || echo "无�
 - **`Argument list too long` 报错**：CLAUDE.md 超过 128KB 导致 ralph 启动崩溃。检查文件大小 `du -sh CLAUDE.md`，把详细内容迁移到 `docs/` 子目录，CLAUDE.md 只保留项目基本介绍，控制在 50KB 以内。
 - **ralph 完成后没有 .ralph/DONE 文件**：说明 PROMPT.md 里没有写入 DONE 的指令。检查 Step 5b 是否成功追加了完成信号指令，然后重新启动 ralph。
 - **任务描述模糊导致 ralph 卡循环**：ralph 日志里出现重复相同操作时，停止 ralph，让用户补充任务细节，更新 fix_plan.md 后重启。
-- **权限报错（permission denied）**：编辑 `.ralphrc`，在 `ALLOWED_TOOLS` 加上需要的工具如 `Bash(npm *)`, `Bash(pytest)`, `Bash(python *)`，然后 `ralph --reset-session` 再重启。
+- **权限报错（permission denied）**：优先检查 `.ralphrc` 是否已配置 `ALLOWED_TOOLS="*"` 和 `CLAUDE_ALLOWED_TOOLS="*"`。如果没有，先征求用户确认后改成 `*`，否则 ralph / claude-code 很容易因权限不足中断；修改后执行 `ralph --reset-session` 再重启。
 - **5小时 API 限制**：ralph 自动等待，告知用户无需操作，约1小时后自动恢复。
 - **PROMPT.md 被 ralph 验证报错**：`validate_ralph_integrity()` 要求 `.ralph/PROMPT.md` 必须存在，不能删除或重命名。
 - **多项目并发**：多个项目同时用 ralph 时，`tmux kill-session -t ralph` 会误杀其他项目的 session。目前 ralph 默认 session 名固定为 `ralph`，暂无内置隔离方案，建议同一时间只跑一个项目，或手动 rename tmux session（`tmux rename-session -t ralph ralph-{项目名}`）并相应修改监控命令。

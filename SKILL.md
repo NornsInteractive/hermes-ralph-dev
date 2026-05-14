@@ -68,7 +68,32 @@ ls {project_path}/.ralph/ 2>/dev/null
   cd {project_path} && ralph-enable
   ```
 
-- If it already exists, skip initialization and continue to Step 4
+- If it already exists, skip initialization and continue to Step 3b
+
+### Step 3b: Check `.ralphrc` tool-permission settings
+
+Before starting Ralph, inspect whether `{project_path}/.ralphrc` contains both of these lines:
+
+```bash
+grep '^ALLOWED_TOOLS="\\*"' {project_path}/.ralphrc 2>/dev/null
+grep '^CLAUDE_ALLOWED_TOOLS="\\*"' {project_path}/.ralphrc 2>/dev/null
+```
+
+**Decision rules**
+
+- If both values are already `*`, continue to Step 4
+- If either value is missing or not `*`, Hermes must prompt the user first:
+
+  ```text
+  I detected that {project_path}/.ralphrc does not contain:
+  - ALLOWED_TOOLS="*"
+  - CLAUDE_ALLOWED_TOOLS="*"
+
+  If these are not set to `*`, Ralph / Claude Code may be interrupted by tool-permission restrictions during execution.
+  Do you want me to change them to `*` before continuing?
+  ```
+
+Do not start Ralph until the user confirms.
 
 ### Step 4: Update `CLAUDE.md`
 
@@ -396,6 +421,11 @@ if [ ! -d "{project_path}/.ralph" ]; then
   # Tell the user this project has not been initialized with Ralph yet
   # Tell them to run the new development flow first
 fi
+
+grep '^ALLOWED_TOOLS="\\*"' "{project_path}/.ralphrc" 2>/dev/null
+grep '^CLAUDE_ALLOWED_TOOLS="\\*"' "{project_path}/.ralphrc" 2>/dev/null
+# If either value is missing or not *, ask the user whether Hermes should change both values to *
+# Do not restart Ralph until the user confirms
 ```
 
 ### Step 3: Stop the current Ralph session
@@ -461,7 +491,7 @@ Reply format:
 - **`Argument list too long`**: `CLAUDE.md` is too large and Ralph crashes on startup. Check the size with `du -sh CLAUDE.md` and move detailed notes into `docs/`. Keep `CLAUDE.md` under 50 KB.
 - **No `.ralph/DONE` after completion**: `PROMPT.md` is missing the completion-signal instruction. Re-apply Step 5b and restart Ralph.
 - **Ralph loops because the task is vague**: if the log repeats the same action, stop Ralph, ask the user for more detail, update `fix_plan.md`, and restart.
-- **Permission denied**: edit `.ralphrc`, extend `ALLOWED_TOOLS` with the needed entries such as `Bash(npm *)`, `Bash(pytest)`, or `Bash(python *)`, then run `ralph --reset-session` and restart.
+- **Permission denied**: first check whether `.ralphrc` already contains `ALLOWED_TOOLS="*"` and `CLAUDE_ALLOWED_TOOLS="*"`. If not, ask the user whether Hermes should change both values to `*`; otherwise Ralph / Claude Code can easily be interrupted by permission restrictions. After updating `.ralphrc`, run `ralph --reset-session` and restart.
 - **5-hour API limit**: Ralph usually waits automatically. Tell the user no action is needed and it should recover after about an hour.
 - **`PROMPT.md` fails validation**: `validate_ralph_integrity()` requires `.ralph/PROMPT.md` to exist. Do not delete or rename it.
 - **Multiple concurrent projects**: `tmux kill-session -t ralph` can kill the wrong session if multiple projects share the default `ralph` session name. Prefer running one project at a time, or rename the session manually with `tmux rename-session -t ralph ralph-{project-name}` and update the monitoring command accordingly.

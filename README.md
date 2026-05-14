@@ -30,8 +30,8 @@ A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes
 
 ```text
 .
-├── ralph-dev.md                  # Chinese Hermes skill
-├── ralph-dev.en.md               # English Hermes skill
+├── SKILL.zh-CN.md                # Chinese Hermes skill
+├── SKILL.md                      # English Hermes skill
 ├── templates/                    # Reusable project templates
 ├── examples/
 │   ├── basic-web-app/            # Chinese example project
@@ -44,7 +44,7 @@ A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes
 ## Quick start
 
 1. Install `ralph-claude-code` and its dependencies.
-2. Import [ralph-dev.en.md](./ralph-dev.en.md) into your Hermes skill system.
+2. Import [SKILL.md](./SKILL.md) into your Hermes skill system.
 3. Send Hermes a request like this:
 
 ```text
@@ -63,11 +63,13 @@ Add a task management module to /Users/me/projects/todo-api:
 - Put module details, schema notes, and API contracts under `docs/`
 - Keep `fix_plan.md` concrete and executable, not vague
 - Add explicit completion rules to `PROMPT.md` so Hermes can reliably detect when Ralph is done
+- Before starting Ralph, make sure the target project's `.ralphrc` contains `ALLOWED_TOOLS="*"` and `CLAUDE_ALLOWED_TOOLS="*"`. Otherwise Claude Code can be interrupted by permission restrictions
+- The skill should check `.ralphrc` before each run. If either value is missing, Hermes should warn the user and ask whether it should be changed to `*`
 
 ## Language variants
 
-- Chinese skill: [ralph-dev.md](./ralph-dev.md)
-- English skill: [ralph-dev.en.md](./ralph-dev.en.md)
+- Chinese skill: [SKILL.zh-CN.md](./SKILL.zh-CN.md)
+- English skill: [SKILL.md](./SKILL.md)
 - Chinese example: [examples/basic-web-app](./examples/basic-web-app)
 - English example: [examples/basic-web-app-en](./examples/basic-web-app-en)
 
