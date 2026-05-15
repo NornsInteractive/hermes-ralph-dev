@@ -2,7 +2,7 @@
 
 # basic-web-app example
 
-This is a demonstration project skeleton that shows the kind of files Hermes prepares for Ralph / Claude Code after receiving a development request.
+This is a demonstration project skeleton that shows the kind of files a generic agent prepares for Ralph / Claude Code after receiving a development request.
 
 Scenario:
 

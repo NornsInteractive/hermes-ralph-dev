@@ -1,23 +1,25 @@
 ---
 name: ralph-dev
-description: 用 ralph-claude-code 自动化开发流程。给我需求或 bug 描述，我配置好文件后启动 ralph 自动写代码，完成后主动通知你。我自己不写任何代码。
+description: 用 ralph-claude-code 自动化开发流程。给我需求或 bug 描述，你负责配置文件、启动 ralph、汇报结果，真正的业务代码全部由 ralph 完成。适用于 Codex、Claude Code、Cursor 等常见 agent。
 version: 3.2.0
 platforms: [macos, linux]
 metadata:
-  hermes:
-    tags: [development, automation, claude-code, ralph]
-    category: devops
-    requires_toolsets: [terminal]
+  tags: [development, automation, claude-code, ralph, codex, cursor, agent]
+  category: devops
+  requires_toolsets: [terminal]
+  compatible_agents: [codex, claude-code, cursor, generic-agent]
 ---
 
-# Ralph 自动开发 Skill
+# 通用 Agent Ralph 自动开发 Skill
+
+适用于 `Codex`、`Claude Code`、`Cursor` 以及其他具备终端能力的常见 agent。全文中的“你”指当前执行该 skill 的 agent。
 
 ## 核心约束（任何情况下都必须遵守）
 
-- Hermes 在此 skill 中**只做四件事**：收集需求、配置文件、执行命令、发送通知
-- Hermes **绝对不写任何业务代码**，不修改任何源码文件
+- 你在此 skill 中**只做四件事**：收集需求、配置文件、执行命令、发送通知
+- 你**绝对不写任何业务代码**，不修改任何源码文件
 - 所有代码编写全部由 ralph + claude-code 完成
-- 遇到用户要求 Hermes 直接写代码的情况，回复"这部分交给 ralph 完成"，然后把需求写进 fix_plan.md
+- 遇到用户要求你直接写代码的情况，回复"这部分交给 ralph 完成"，然后把需求写进 fix_plan.md
 
 ---
 
@@ -430,7 +432,7 @@ else
 fi
 ```
 
-Hermes **不定位 bug 根因，不写修复方案**，只把用户描述如实写入，让 ralph 去定位修复。收集 bug 信息时可判断信息是否完整，不完整则追问。
+你**不定位 bug 根因，不写修复方案**，只把用户描述如实写入，让 ralph 去定位修复。收集 bug 信息时可判断信息是否完整，不完整则追问。
 
 ### Step 5：重新启动 ralph
 
@@ -486,4 +488,4 @@ ralph 正常运行的标志：
 - `tmux list-sessions` 能看到 ralph session
 - `.ralph/fix_plan.md` 中 `[x]` 数量在增加
 - `.ralph/logs/ralph.log` 持续更新
-- 项目目录出现新的业务源码文件（Hermes 只读 `.ralph/` 下的状态文件，不读业务源码）
+- 项目目录出现新的业务源码文件（你只读 `.ralph/` 下的状态文件，不读业务源码）

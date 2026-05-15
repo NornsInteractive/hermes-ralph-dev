@@ -2,15 +2,17 @@
 
 # hermes-ralph-dev
 
-A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes collects requirements, prepares the project files Ralph needs, starts `ralph`, tracks progress, and reports results. Hermes does not write business code itself.
+A generic-agent skill for orchestrating development through Ralph + Claude Code. The agent collects requirements, prepares the project files Ralph needs, starts `ralph`, tracks progress, and reports results. All business-code writing is delegated to `ralph-claude-code`. It works with `Codex`, `Claude Code`, `Cursor`, and similar agents.
+
+Supported agent styles: `Codex`, `Claude Code`, `Cursor`, and other agents that can follow structured instructions and run terminal commands.
 
 ## Goals
 
 - Standardize the workflow from requirement intake to Ralph configuration to Claude Code execution to status reporting
-- Keep the responsibility boundary between Hermes and Ralph explicit
+- Keep the responsibility boundary between the current agent and Ralph explicit
 - Provide reusable templates and complete examples for open-source distribution or internal team reuse
 
-## What Hermes does
+## What The Agent Does
 
 - Collect feature requests or bug reports
 - Check whether `ralph` is installed and whether the target project is initialized
@@ -20,7 +22,7 @@ A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes
 - Start `ralph --monitor`
 - Watch for completion, timeout, or crashes and notify the user
 
-## What Hermes does not do
+## What The Agent Does Not Do
 
 - Write business code
 - Modify application source files directly
@@ -30,8 +32,8 @@ A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes
 
 ```text
 .
-├── SKILL.zh-CN.md                # Chinese Hermes skill
-├── SKILL.md                      # English Hermes skill
+├── SKILL.zh-CN.md                # Chinese generic-agent skill
+├── SKILL.md                      # English generic-agent skill
 ├── templates/                    # Reusable project templates
 ├── examples/
 │   ├── basic-web-app/            # Chinese example project
@@ -44,8 +46,8 @@ A Hermes skill for orchestrating development through Ralph + Claude Code. Hermes
 ## Quick start
 
 1. Install `ralph-claude-code` and its dependencies.
-2. Import [SKILL.md](./SKILL.md) into your Hermes skill system.
-3. Send Hermes a request like this:
+2. Import [SKILL.md](./SKILL.md) into your agent as a skill, rules file, or system prompt.
+3. Send your agent a request like this:
 
 ```text
 Add a task management module to /Users/me/projects/todo-api:
@@ -54,17 +56,17 @@ Add a task management module to /Users/me/projects/todo-api:
 - Need JWT login
 ```
 
-4. Hermes checks the environment, prepares the docs and `.ralph/` files, then starts `ralph`.
-5. Ralph invokes Claude Code to implement the work while Hermes reports progress and outcomes.
+4. The agent checks the environment, prepares the docs and `.ralph/` files, then starts `ralph`.
+5. Ralph invokes Claude Code to implement the work while the agent reports progress and outcomes.
 
 ## Recommended setup
 
 - Keep `CLAUDE.md` short and use it only for project summary, stack, conventions, and doc pointers
 - Put module details, schema notes, and API contracts under `docs/`
 - Keep `fix_plan.md` concrete and executable, not vague
-- Add explicit completion rules to `PROMPT.md` so Hermes can reliably detect when Ralph is done
+- Add explicit completion rules to `PROMPT.md` so the agent can reliably detect when Ralph is done
 - Before starting Ralph, make sure the target project's `.ralphrc` contains `ALLOWED_TOOLS="*"` and `CLAUDE_ALLOWED_TOOLS="*"`. Otherwise Claude Code can be interrupted by permission restrictions
-- The skill should check `.ralphrc` before each run. If either value is missing, Hermes should warn the user and ask whether it should be changed to `*`
+- The skill should check `.ralphrc` before each run. If either value is missing, the agent should warn the user and ask whether it should be changed to `*`
 
 ## Language variants
 
@@ -75,7 +77,7 @@ Add a task management module to /Users/me/projects/todo-api:
 
 ## Example projects
 
-The example projects show what a Hermes-initialized Ralph workspace looks like, including:
+The example projects show what an agent-initialized Ralph workspace looks like, including:
 
 - `CLAUDE.md`
 - `.ralph/fix_plan.md`

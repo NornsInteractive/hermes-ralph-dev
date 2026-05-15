@@ -1,23 +1,25 @@
 ---
 name: ralph-dev
-description: Automate software delivery with ralph-claude-code. Give me a feature request or bug report, I will prepare the required files, start Ralph, and notify you when it finishes. I do not write business code myself.
+description: Automate software delivery with ralph-claude-code. Give me a feature request or bug report, and you prepare the required files, start Ralph, and report the result. All business-code writing is delegated to Ralph. Works with Codex, Claude Code, Cursor, and similar agents.
 version: 3.2.0
 platforms: [macos, linux]
 metadata:
-  hermes:
-    tags: [development, automation, claude-code, ralph]
-    category: devops
-    requires_toolsets: [terminal]
+  tags: [development, automation, claude-code, ralph, codex, cursor, agent]
+  category: devops
+  requires_toolsets: [terminal]
+  compatible_agents: [codex, claude-code, cursor, generic-agent]
 ---
 
-# Ralph Automated Development Skill
+# Generic Agent Ralph Development Skill
+
+This skill is designed for `Codex`, `Claude Code`, `Cursor`, and other common agents with terminal access. In this document, "you" refers to the agent running the skill.
 
 ## Core constraints
 
-- Hermes does exactly four things in this skill: gather requirements, prepare files, run commands, and send notifications
-- Hermes never writes business code and never edits application source files
+- You do exactly four things in this skill: gather requirements, prepare files, run commands, and send notifications
+- You never write business code and never edit application source files
 - All code writing is done by `ralph` + Claude Code
-- If the user asks Hermes to write code directly, reply with "That part should be handled by Ralph" and write the requirement into `fix_plan.md`
+- If the user asks you to write code directly, reply with "That part should be handled by Ralph" and write the requirement into `fix_plan.md`
 
 ---
 
@@ -47,7 +49,7 @@ If the user was not specific enough, ask these questions in one message:
 which ralph
 ```
 
-If it is not installed, ask the user to run the installation manually or confirm whether Hermes should guide the installation:
+If it is not installed, ask the user to run the installation manually or confirm whether the agent should guide the installation:
 
 ```bash
 git clone https://github.com/frankbria/ralph-claude-code.git
@@ -82,7 +84,7 @@ grep '^CLAUDE_ALLOWED_TOOLS="\\*"' {project_path}/.ralphrc 2>/dev/null
 **Decision rules**
 
 - If both values are already `*`, continue to Step 4
-- If either value is missing or not `*`, Hermes must prompt the user first:
+- If either value is missing or not `*`, you must prompt the user first:
 
   ```text
   I detected that {project_path}/.ralphrc does not contain:
@@ -424,7 +426,7 @@ fi
 
 grep '^ALLOWED_TOOLS="\\*"' "{project_path}/.ralphrc" 2>/dev/null
 grep '^CLAUDE_ALLOWED_TOOLS="\\*"' "{project_path}/.ralphrc" 2>/dev/null
-# If either value is missing or not *, ask the user whether Hermes should change both values to *
+# If either value is missing or not *, ask the user whether you should change both values to *
 # Do not restart Ralph until the user confirms
 ```
 
@@ -449,7 +451,7 @@ else
 fi
 ```
 
-Hermes does not diagnose the bug or write the solution plan. Hermes only records the user's report faithfully and lets Ralph investigate and fix it.
+You do not diagnose the bug or write the solution plan. You only record the user's report faithfully and let Ralph investigate and fix it.
 
 ### Step 5: Restart Ralph
 
@@ -491,7 +493,7 @@ Reply format:
 - **`Argument list too long`**: `CLAUDE.md` is too large and Ralph crashes on startup. Check the size with `du -sh CLAUDE.md` and move detailed notes into `docs/`. Keep `CLAUDE.md` under 50 KB.
 - **No `.ralph/DONE` after completion**: `PROMPT.md` is missing the completion-signal instruction. Re-apply Step 5b and restart Ralph.
 - **Ralph loops because the task is vague**: if the log repeats the same action, stop Ralph, ask the user for more detail, update `fix_plan.md`, and restart.
-- **Permission denied**: first check whether `.ralphrc` already contains `ALLOWED_TOOLS="*"` and `CLAUDE_ALLOWED_TOOLS="*"`. If not, ask the user whether Hermes should change both values to `*`; otherwise Ralph / Claude Code can easily be interrupted by permission restrictions. After updating `.ralphrc`, run `ralph --reset-session` and restart.
+- **Permission denied**: first check whether `.ralphrc` already contains `ALLOWED_TOOLS="*"` and `CLAUDE_ALLOWED_TOOLS="*"`. If not, ask the user whether you should change both values to `*`; otherwise Ralph / Claude Code can easily be interrupted by permission restrictions. After updating `.ralphrc`, run `ralph --reset-session` and restart.
 - **5-hour API limit**: Ralph usually waits automatically. Tell the user no action is needed and it should recover after about an hour.
 - **`PROMPT.md` fails validation**: `validate_ralph_integrity()` requires `.ralph/PROMPT.md` to exist. Do not delete or rename it.
 - **Multiple concurrent projects**: `tmux kill-session -t ralph` can kill the wrong session if multiple projects share the default `ralph` session name. Prefer running one project at a time, or rename the session manually with `tmux rename-session -t ralph ralph-{project-name}` and update the monitoring command accordingly.
@@ -503,4 +505,4 @@ Signs that Ralph is working normally:
 - `tmux list-sessions` shows a `ralph` session
 - The number of `[x]` entries in `.ralph/fix_plan.md` keeps increasing
 - `.ralph/logs/ralph.log` continues updating
-- New business-source files appear in the target project. Hermes should only read status files under `.ralph/`, not application source files
+- New business-source files appear in the target project. You should only read status files under `.ralph/`, not application source files

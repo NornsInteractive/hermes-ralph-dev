@@ -2,7 +2,7 @@
 
 # basic-web-app 示例
 
-这是一个演示用项目骨架，展示 Hermes 在接收到需求后，为 Ralph / Claude Code 准备出来的典型文件结构。
+这是一个演示用项目骨架，展示通用 agent 在接收到需求后，为 Ralph / Claude Code 准备出来的典型文件结构。
 
 场景设定：
 

@@ -2,15 +2,17 @@
 
 # hermes-ralph-dev
 
-一个给 Hermes 使用的开发编排 skill：Hermes 负责收集需求、准备 Ralph / Claude Code 所需文件、启动 `ralph` 并回报状态，真正的代码编写全部交给 `ralph-claude-code`。
+一个面向通用 agent 的开发编排 skill：你负责收集需求、准备 Ralph / Claude Code 所需文件、启动 `ralph` 并回报状态，真正的代码编写全部交给 `ralph-claude-code`。适用于 `Codex`、`Claude Code`、`Cursor` 等常见 agent。
+
+已支持的 agent 形态：`Codex`、`Claude Code`、`Cursor`，以及其他能遵循结构化指令并执行终端命令的 agent。
 
 ## 仓库目标
 
 - 把“提需求 -> 生成 Ralph 配置 -> 启动 Claude Code 开发 -> 回报进度”这条链路标准化
-- 明确 Hermes 与 Ralph 的职责边界，避免 Hermes 越权直接改业务代码
+- 明确当前 agent 与 Ralph 的职责边界，避免 agent 越权直接改业务代码
 - 提供可复用模板与完整示例，方便你直接开源、二次修改或给团队内部复用
 
-## Hermes 在这个 skill 中做什么
+## 这个 Agent 做什么
 
 - 收集需求或 bug 信息
 - 检查 `ralph` 是否可用、项目是否已初始化
@@ -20,7 +22,7 @@
 - 启动 `ralph --monitor`
 - 监控完成、超时、异常退出并通知用户
 
-## Hermes 不做什么
+## 这个 Agent 不做什么
 
 - 不写任何业务代码
 - 不直接修改源码文件
@@ -30,8 +32,8 @@
 
 ```text
 .
-├── SKILL.zh-CN.md                # 中文版 Hermes skill
-├── SKILL.md                      # 英文版 Hermes skill
+├── SKILL.zh-CN.md                # 中文版通用 agent skill
+├── SKILL.md                      # 英文版通用 agent skill
 ├── templates/                    # 可复用项目模板
 ├── examples/
 │   ├── basic-web-app/            # 中文示例项目
@@ -44,8 +46,8 @@
 ## 快速使用
 
 1. 安装 `ralph-claude-code` 以及它依赖的工具。
-2. 把 [SKILL.zh-CN.md](./SKILL.zh-CN.md) 导入 Hermes skill 系统。
-3. 给 Hermes 发需求，例如：
+2. 把 [SKILL.zh-CN.md](./SKILL.zh-CN.md) 作为系统 prompt、skill 或规则文件导入你的 agent。
+3. 给 agent 发需求，例如：
 
 ```text
 在 /Users/me/projects/todo-api 里新增一个任务管理模块：
@@ -54,17 +56,17 @@
 - 要有 JWT 登录
 ```
 
-4. Hermes 会检查环境、准备文档和 `.ralph/` 文件，然后启动 `ralph`。
-5. Ralph 调起 Claude Code 完成开发；Hermes 负责汇报状态与结果。
+4. 当前 agent 会检查环境、准备文档和 `.ralph/` 文件，然后启动 `ralph`。
+5. Ralph 调起 Claude Code 完成开发；当前 agent 负责汇报状态与结果。
 
 ## 推荐配套方式
 
 - `CLAUDE.md` 只保留项目简介、技术栈、规则和 docs 索引
 - 详细模块说明、表结构、接口约定全部写到 `docs/`
 - `fix_plan.md` 只写具体可执行任务，不写模糊目标
-- `PROMPT.md` 里加入完成信号，保证 Hermes 能识别 Ralph 已结束
+- `PROMPT.md` 里加入完成信号，保证当前 agent 能识别 Ralph 已结束
 - 启动 Ralph 前，确保目标项目的 `.ralphrc` 中已配置 `ALLOWED_TOOLS="*"` 和 `CLAUDE_ALLOWED_TOOLS="*"`，否则 Claude Code 很容易因为权限限制中途中断
-- Skill 在每次启动前都应检查 `.ralphrc`；如果缺少任一项，Hermes 需要先提示用户是否改成 `*`
+- Skill 在每次启动前都应检查 `.ralphrc`；如果缺少任一项，当前 agent 需要先提示用户是否改成 `*`
 
 ## 多语言文件
 
@@ -75,7 +77,7 @@
 
 ## 示例说明
 
-示例项目展示了 Hermes 初始化 Ralph 工作区后的典型结构，包括：
+示例项目展示了通用 agent 初始化 Ralph 工作区后的典型结构，包括：
 
 - `CLAUDE.md`
 - `.ralph/fix_plan.md`
