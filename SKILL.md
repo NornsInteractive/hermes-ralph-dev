@@ -1,6 +1,6 @@
 ---
 name: ralph-dev
-description: Automate software delivery with ralph-claude-code. Give me a feature request or bug report, and you prepare the required files, start Ralph, and report the result. All business-code writing is delegated to Ralph. Works with Codex, Claude Code, Cursor, and similar agents.
+description: Automate software delivery with ralph-claude-code. Give me a feature request or bug report, and you prepare the required files, start Ralph, and report the result. Claude Code only audits, splits tasks, and creates sub-agents; all business code is implemented by those sub-agents. Works with Codex, Claude Code, Cursor, and similar agents.
 version: 3.2.0
 platforms: [macos, linux]
 metadata:
@@ -18,7 +18,8 @@ This skill is designed for `Codex`, `Claude Code`, `Cursor`, and other common ag
 
 - You do exactly four things in this skill: gather requirements, prepare files, run commands, and send notifications
 - You never write business code and never edit application source files
-- All code writing is done by `ralph` + Claude Code
+- Claude Code only audits, splits tasks, creates sub-agents, and verifies results. It does not write business code directly.
+- All business code is written by sub-agents created and coordinated by Claude Code
 - If the user asks you to write code directly, reply with "That part should be handled by Ralph" and write the requirement into `fix_plan.md`
 
 ---

@@ -2,7 +2,7 @@
 
 # hermes-ralph-dev
 
-A generic-agent skill for orchestrating development through Ralph + Claude Code. The agent collects requirements, prepares the project files Ralph needs, starts `ralph`, tracks progress, and reports results. All business-code writing is delegated to `ralph-claude-code`. It works with `Codex`, `Claude Code`, `Cursor`, and similar agents.
+A generic-agent skill for orchestrating development through Ralph + Claude Code. The agent collects requirements, prepares the project files Ralph needs, starts `ralph`, tracks progress, and reports results. If the executor is Claude Code, it acts as an auditor and task splitter only, creating sub-agents for implementation. All business-code writing is delegated to those sub-agents. It works with `Codex`, `Claude Code`, `Cursor`, and similar agents.
 
 Supported agent styles: `Codex`, `Claude Code`, `Cursor`, and other agents that can follow structured instructions and run terminal commands.
 
@@ -57,7 +57,7 @@ Add a task management module to /Users/me/projects/todo-api:
 ```
 
 4. The agent checks the environment, prepares the docs and `.ralph/` files, then starts `ralph`.
-5. Ralph invokes Claude Code to implement the work while the agent reports progress and outcomes.
+5. Ralph invokes Claude Code to audit, split tasks, and coordinate sub-agents while the agent reports progress and outcomes.
 
 ## Recommended setup
 
@@ -65,6 +65,7 @@ Add a task management module to /Users/me/projects/todo-api:
 - Put module details, schema notes, and API contracts under `docs/`
 - Keep `fix_plan.md` concrete and executable, not vague
 - Add explicit completion rules to `PROMPT.md` so the agent can reliably detect when Ralph is done
+- If the executor is Claude Code, it should only audit, split tasks, create sub-agents, and verify results. It should not edit business code directly
 - Before starting Ralph, make sure the target project's `.ralphrc` contains `ALLOWED_TOOLS="*"` and `CLAUDE_ALLOWED_TOOLS="*"`. Otherwise Claude Code can be interrupted by permission restrictions
 - The skill should check `.ralphrc` before each run. If either value is missing, the agent should warn the user and ask whether it should be changed to `*`
 

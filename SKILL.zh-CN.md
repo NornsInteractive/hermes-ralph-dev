@@ -1,6 +1,6 @@
 ---
 name: ralph-dev
-description: 用 ralph-claude-code 自动化开发流程。给我需求或 bug 描述，你负责配置文件、启动 ralph、汇报结果，真正的业务代码全部由 ralph 完成。适用于 Codex、Claude Code、Cursor 等常见 agent。
+description: 用 ralph-claude-code 自动化开发流程。给我需求或 bug 描述，你负责配置文件、启动 ralph、汇报结果；Claude Code 只做审计、拆分任务和创建子 agent，真正的业务代码全部由子 agent 完成。适用于 Codex、Claude Code、Cursor 等常见 agent。
 version: 3.2.0
 platforms: [macos, linux]
 metadata:
@@ -18,7 +18,8 @@ metadata:
 
 - 你在此 skill 中**只做四件事**：收集需求、配置文件、执行命令、发送通知
 - 你**绝对不写任何业务代码**，不修改任何源码文件
-- 所有代码编写全部由 ralph + claude-code 完成
+- Claude Code 只负责审计、拆分任务、创建子 agent 和验收，不直接写业务代码
+- 所有业务代码编写全部由 Claude Code 创建并调度的子 agent 完成
 - 遇到用户要求你直接写代码的情况，回复"这部分交给 ralph 完成"，然后把需求写进 fix_plan.md
 
 ---

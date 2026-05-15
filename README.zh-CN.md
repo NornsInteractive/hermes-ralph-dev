@@ -2,7 +2,7 @@
 
 # hermes-ralph-dev
 
-一个面向通用 agent 的开发编排 skill：你负责收集需求、准备 Ralph / Claude Code 所需文件、启动 `ralph` 并回报状态，真正的代码编写全部交给 `ralph-claude-code`。适用于 `Codex`、`Claude Code`、`Cursor` 等常见 agent。
+一个面向通用 agent 的开发编排 skill：你负责收集需求、准备 Ralph / Claude Code 所需文件、启动 `ralph` 并回报状态。若由 `Claude Code` 执行，它只负责审计、拆分任务和创建子 agent，真正的代码编写全部交给子 agent。适用于 `Codex`、`Claude Code`、`Cursor` 等常见 agent。
 
 已支持的 agent 形态：`Codex`、`Claude Code`、`Cursor`，以及其他能遵循结构化指令并执行终端命令的 agent。
 
@@ -57,7 +57,7 @@
 ```
 
 4. 当前 agent 会检查环境、准备文档和 `.ralph/` 文件，然后启动 `ralph`。
-5. Ralph 调起 Claude Code 完成开发；当前 agent 负责汇报状态与结果。
+5. Ralph 调起 Claude Code 进行审计、拆分任务并协调子 agent；当前 agent 负责汇报状态与结果。
 
 ## 推荐配套方式
 
@@ -65,6 +65,7 @@
 - 详细模块说明、表结构、接口约定全部写到 `docs/`
 - `fix_plan.md` 只写具体可执行任务，不写模糊目标
 - `PROMPT.md` 里加入完成信号，保证当前 agent 能识别 Ralph 已结束
+- 如果当前执行者是 `Claude Code`，它只做审计和任务拆分，不直接改业务代码，开发任务交给它创建的子 agent
 - 启动 Ralph 前，确保目标项目的 `.ralphrc` 中已配置 `ALLOWED_TOOLS="*"` 和 `CLAUDE_ALLOWED_TOOLS="*"`，否则 Claude Code 很容易因为权限限制中途中断
 - Skill 在每次启动前都应检查 `.ralphrc`；如果缺少任一项，当前 agent 需要先提示用户是否改成 `*`
 
